@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PadSplit Deal Analyzer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2e;
+    --navy-mid: #152540;
+    --navy-light: #1e3353;
+    --navy-card: #162236;
+    --accent: #4fc3f7;
+    --accent-dim: #1e4a6e;
+    --gold: #f5c842;
+    --gold-dim: #5a4a10;
+    --green: #4caf7d;
+    --green-dim: #1a3d2b;
+    --yellow: #f5c842;
+    --yellow-dim: #3d3010;
+    --red: #ef5350;
+    --red-dim: #3d1515;
+    --white: #f0f4f8;
+    --muted: #8aa3be;
+    --border: rgba(79,195,247,0.12);
+    --border-soft: rgba(255,255,255,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .logo span { color: var(--accent); }
+
+  nav { display: flex; gap: 2rem; }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, var(--navy-mid) 0%, var(--navy) 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(79,195,247,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    display: inline-block;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(79,195,247,0.25);
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--white);
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 540px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-stat .lbl {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .section-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .section-header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    font-weight: 300;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border-soft);
+    margin: 0;
+  }
+
+  /* ── DEAL ANALYZER ── */
+  .analyzer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .analyzer-grid { grid-template-columns: 1fr; }
+    nav { display: none; }
+  }
+
+  .card {
+    background: var(--navy-card);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 1.75rem;
+  }
+
+  .card h3 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .input-group {
+    margin-bottom: 1rem;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+  }
+
+  .input-group .input-row {
+    display: flex;
+    align-items: center;
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .input-group .input-row:focus-within {
+    border-color: var(--accent);
+  }
+
+  .input-group .prefix {
+    padding: 0 0.75rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.03);
+    border-right: 1px solid var(--border);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+
+  .input-group input[type="number"],
+  .input-group input[type="range"] {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .input-group input[type="range"] {
+    -webkit-appearance: none;
+    padding: 0 0.85rem;
+    cursor: pointer;
+    height: 44px;
+  }
+
+  .input-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .input-group input[type="range"]::-webkit-slider-runnable-track {
+    background: var(--navy-mid);
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .slider-val {
+    min-width: 3.5rem;
+    text-align: right;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding-right: 0.75rem;
+    user-select: none;
+  }
+
+  /* Results */
+  .results-card {
+    background: var(--navy-card);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .result-row:last-child { border-bottom: none; }
+
+  .result-row .rlabel {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .result-row .rval {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .result-row.highlight .rval {
+    font-size: 1.15rem;
+    color: var(--accent);
+  }
+
+  .result-row.big .rval {
+    font-size: 1.4rem;
+    color: var(--white);
+  }
+
+  /* Deal Badge */
+  .deal-badge {
+    margin-top: 1.25rem;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.4s ease;
+  }
+
+  .deal-badge.green { background: var(--green-dim); border: 1px solid var(--green); }
+  .deal-badge.yellow { background: var(--yellow-dim); border: 1px solid var(--yellow); }
+  .deal-badge.red { background: var(--red-dim); border: 1px solid var(--red); }
+
+  .badge-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .badge-text .badge-title {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .deal-badge.green .badge-title { color: var(--green); }
+  .deal-badge.yellow .badge-title { color: var(--yellow); }
+  .deal-badge.red .badge-title { color: var(--red); }
+
+  .badge-text .badge-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+
+  .buybox {
+    margin-top: 0.75rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .buybox.pass { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .buybox.fail { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+
+  /* ── GOOD BETTER BEST ── */
+  .gbb-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .gbb-grid { grid-template-columns: 1fr; }
+  }
+
+  .gbb-card {
+    background: var(--navy-card);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .gbb-card:hover { transform: translateY(-3px); }
+
+  .gbb-card.good { border-top: 3px solid #4fc3f7; }
+  .gbb-card.better { border-top: 3px solid var(--gold); }
+  .gbb-card.best {
+    border-top: 3px solid var(--green);
+    border-color: rgba(76,175,125,0.3);
+  }
+
+  .gbb-card.best::before {
+    content: 'TARGET';
+    position: absolute;
+    top: 1rem; right: 1rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--green);
+    background: var(--green-dim);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--green);
+  }
+
+  .gbb-tier {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .gbb-card.good .gbb-tier { color: var(--accent); }
+  .gbb-card.better .gbb-tier { color: var(--gold); }
+  .gbb-card.best .gbb-tier { color: var(--green); }
+
+  .gbb-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .gbb-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 0.875rem;
+  }
+
+  .gbb-stat:last-child { border-bottom: none; }
+
+  .gbb-stat .gs-label { color: var(--muted); }
+  .gbb-stat .gs-val { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+  .gbb-cashflow {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .gbb-cashflow .cf-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .gbb-cashflow .cf-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .gbb-card.good .cf-val { color: var(--accent); }
+  .gbb-card.better .cf-val { color: var(--gold); }
+  .gbb-card.best .cf-val { color: var(--green); }
+
+  /* ── BRRRR ── */
+  .brrrr-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .brrrr-wrap { grid-template-columns: 1fr; }
+  }
+
+  .brrrr-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .brrrr-step {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border-soft);
+    position: relative;
+  }
+
+  .brrrr-step:last-child { border-bottom: none; }
+
+  .step-letter {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(79,195,247,0.3);
+    color: var(--accent);
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-body h4 {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    color: var(--white);
+  }
+
+  .step-body p {
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .brrrr-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .brrrr-num-card {
+    background: var(--navy-card);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .brrrr-num-card h4 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.85rem;
+  }
+
+  .brrrr-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .bf-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .bf-row .bfl { color: var(--muted); }
+  .bf-row .bfv { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+  .bf-row.total {
+    border-top: 1px solid var(--border-soft);
+    padding-top: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .bf-row.total .bfl { color: var(--white); font-weight: 600; }
+  .bf-row.total .bfv { color: var(--green); font-size: 1rem; }
+
+  .scaling-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.83rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: center;
+  }
+
+  .scaling-row:last-child { border-bottom: none; }
+  .scaling-row.head { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .scaling-row .sv { font-family: 'DM Mono', monospace; color: var(--green); }
+
+  /* ── SBL ── */
+  .sbl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) { .sbl-grid { grid-template-columns: 1fr; } }
+
+  .ltv-bar-wrap {
+    margin: 1rem 0;
+  }
+
+  .ltv-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.04em;
+  }
+
+  .ltv-bar {
+    height: 10px;
+    background: var(--navy-mid);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ltv-zones {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+
+  .ltv-zone-safe { background: var(--green); flex: 30; opacity: 0.2; }
+  .ltv-zone-warn { background: var(--yellow); flex: 20; opacity: 0.2; }
+  .ltv-zone-danger { background: var(--red); flex: 50; opacity: 0.2; }
+
+  .ltv-fill {
+    height: 10px;
+    border-radius: 6px;
+    transition: width 0.4s ease, background 0.4s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .sbl-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 0.875rem;
+  }
+
+  .sbl-metric:last-child { border-bottom: none; }
+  .sbl-metric .sm-label { color: var(--muted); }
+  .sbl-metric .sm-val { font-family: 'DM Mono', monospace; font-weight: 500; }
+  .sbl-metric .sm-val.safe { color: var(--green); }
+  .sbl-metric .sm-val.warn { color: var(--yellow); }
+  .sbl-metric .sm-val.danger { color: var(--red); }
+
+  .risk-zones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .risk-zone {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    font-size: 0.83rem;
+  }
+
+  .risk-zone.safe { background: var(--green-dim); border: 1px solid rgba(76,175,125,0.25); }
+  .risk-zone.warn { background: var(--yellow-dim); border: 1px solid rgba(245,200,66,0.25); }
+  .risk-zone.danger { background: var(--red-dim); border: 1px solid rgba(239,83,80,0.25); }
+
+  .rz-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .safe .rz-dot { background: var(--green); }
+  .warn .rz-dot { background: var(--yellow); }
+  .danger .rz-dot { background: var(--red); }
+
+  .rz-label { font-weight: 600; }
+  .safe .rz-label { color: var(--green); }
+  .warn .rz-label { color: var(--yellow); }
+  .danger .rz-label { color: var(--red); }
+
+  .rz-desc { color: var(--muted); margin-left: auto; font-size: 0.78rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy-mid);
+    border-top: 1px solid var(--border-soft);
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  footer strong { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section { animation: fadeUp 0.5s ease both; }
+
+  /* Utility */
+  .mono { font-family: 'DM Mono', monospace; }
+  .accent { color: var(--accent); }
+  .muted { color: var(--muted); }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">PadSplit <span>Analyzer</span></div>
+    <nav>
+      <a href="#analyzer">Analyzer</a>
+      <a href="#gbb">Scenarios</a>
+      <a href="#brrrr">BRRRR</a>
+      <a href="#sbl">SBL Risk</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Operator-Grade Deal Analysis</div>
+  <h1>Know the deal before<br><em>you make the offer.</em></h1>
+  <p>Built on real PadSplit performance data. Every number grounded in your actual occupancy, collections, and expenses.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="num">$145</span>
+      <span class="lbl">Avg Rent / Week</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">90%</span>
+      <span class="lbl">Occupancy Rate</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">$800+</span>
+      <span class="lbl">Target Cash Flow</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">&lt;25%</span>
+      <span class="lbl">Safe SBL LTV</span>
+    </div>
+  </div>
+</div>
+
+<!-- DEAL ANALYZER -->
+<div id="analyzer">
+<div class="section">
+  <div class="section-header">
+    <span class="section-tag">Section 01</span>
+    <h2>Deal Analyzer</h2>
+    <p>Change the blue inputs — everything recalculates instantly.</p>
+  </div>
+
+  <div class="analyzer-grid">
+
+    <!-- INPUTS LEFT -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="card">
+        <h3>Acquisition</h3>
+        <div class="input-group">
+          <label>Purchase Price</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="purchase" value="70000" oninput="calc()"></div>
+        </div>
+        <div class="input-group">
+          <label>Rehab Cost</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="rehab" value="30000" oninput="calc()"></div>
+        </div>
+        <div class="input-group">
+          <label>After Repair Value (ARV)</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="arv" value="150000" oninput="calc()"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Income</h3>
+        <div class="input-group">
+          <label>Rooms</label>
+          <div class="input-row">
+            <input type="range" id="rooms" min="4" max="9" value="7" oninput="calc()">
+            <span class="slider-val" id="roomsVal">7</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Avg Rent / Week</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="rent" value="145" oninput="calc()"></div>
+        </div>
+        <div class="input-group">
+          <label>Occupancy Rate</label>
+          <div class="input-row">
+            <input type="range" id="occ" min="0.70" max="1.00" step="0.01" value="0.90" oninput="calc()">
+            <span class="slider-val" id="occVal">90%</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Collection Loss %</label>
+          <div class="input-row">
+            <input type="range" id="collLoss" min="0.00" max="0.25" step="0.01" value="0.10" oninput="calc()">
+            <span class="slider-val" id="collLossVal">10%</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>PadSplit Fee (15%)</label>
+          <div class="input-row">
+            <input type="range" id="psFee" min="0.10" max="0.20" step="0.01" value="0.15" oninput="calc()">
+            <span class="slider-val" id="psFeeVal">15%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Monthly Expenses</h3>
+        <div class="input-group">
+          <label>Mortgage</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="mortgage" value="950" oninput="calc()"></div>
+        </div>
+        <div class="input-group">
+          <label>Utilities</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="utilities" value="650" oninput="calc()"></div>
+        </div>
+        <div class="input-group">
+          <label>Mgmt + Lawn</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="mgmt" value="350" oninput="calc()"></div>
+        </div>
+        <div class="input-group">
+          <label>Cleaning</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="cleaning" value="200" oninput="calc()"></div>
+        </div>
+        <div class="input-group">
+          <label>Internet</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="internet" value="100" oninput="calc()"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RESULTS RIGHT -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="results-card">
+        <h3 style="font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-soft);">Income Breakdown</h3>
+        <div class="result-row"><span class="rlabel">Total Investment</span><span class="rval" id="r-totalInvest">$100,000</span></div>
+        <div class="result-row"><span class="rlabel">Weekly Gross</span><span class="rval" id="r-weeklyGross">$1,015</span></div>
+        <div class="result-row"><span class="rlabel">Monthly Gross</span><span class="rval" id="r-monthlyGross">$4,395</span></div>
+        <div class="result-row"><span class="rlabel">After Occupancy</span><span class="rval" id="r-afterOcc">$3,955</span></div>
+        <div class="result-row"><span class="rlabel">After PadSplit Fee</span><span class="rval" id="r-afterPS">$3,362</span></div>
+        <div class="result-row highlight"><span class="rlabel">Monthly Collected</span><span class="rval" id="r-collected">$3,025</span></div>
+      </div>
+
+      <div class="results-card">
+        <h3 style="font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-soft);">Expenses & Cash Flow</h3>
+        <div class="result-row"><span class="rlabel">Total Expenses</span><span class="rval" id="r-expenses">$2,250</span></div>
+        <div class="result-row big"><span class="rlabel">Net Cash Flow / Mo</span><span class="rval" id="r-cashflow">$775</span></div>
+        <div class="result-row"><span class="rlabel">Annual Cash Flow</span><span class="rval" id="r-annual">$9,300</span></div>
+      </div>
+
+      <div class="results-card">
+        <h3 style="font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-soft);">Refinance (BRRRR)</h3>
+        <div class="result-row"><span class="rlabel">Refi Loan @ 75% ARV</span><span class="rval" id="r-refiLoan">$112,500</span></div>
+        <div class="result-row"><span class="rlabel">Est. Closing Costs</span><span class="rval">~$5,000</span></div>
+        <div class="result-row highlight"><span class="rlabel">Est. Cash Out</span><span class="rval" id="r-cashOut">$7,500</span></div>
+      </div>
+
+      <!-- Deal Rating Badge -->
+      <div class="deal-badge green" id="dealBadge">
+        <div class="badge-icon" id="badgeIcon">✅</div>
+        <div class="badge-text">
+          <div class="badge-title" id="badgeTitle">BEST DEAL</div>
+          <div class="badge-sub" id="badgeSub">Cash flow ≥ $1,000 · All buy box criteria met</div>
+        </div>
+      </div>
+      <div class="buybox pass" id="buyboxStatus">✔ WITHIN BUY BOX</div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="divider">
+
+<!-- GOOD BETTER BEST -->
+<div id="gbb">
+<div class="section">
+  <div class="section-header">
+    <span class="section-tag">Section 02</span>
+    <h2>Good · Better · Best</h2>
+    <p>Three execution tiers — each based on your real expense structure and PadSplit performance data.</p>
+  </div>
+
+  <div class="gbb-grid">
+    <div class="gbb-card good">
+      <div class="gbb-tier">Good</div>
+      <h3>Base Hit</h3>
+      <div class="gbb-stat"><span class="gs-label">Purchase Price</span><span class="gs-val">$75,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Rehab Budget</span><span class="gs-val">$35,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Total In</span><span class="gs-val">$110,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Rooms</span><span class="gs-val">6 rooms</span></div>
+      <div class="gbb-stat"><span class="gs-label">ARV Target</span><span class="gs-val">$140,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Refi Cash Out</span><span class="gs-val">~$0–$5K</span></div>
+      <div class="gbb-stat"><span class="gs-label">Utility Control</span><span class="gs-val">Basic</span></div>
+      <div class="gbb-cashflow">
+        <div class="cf-label">Monthly Cash Flow</div>
+        <div class="cf-val">$600–$800</div>
+      </div>
+    </div>
+
+    <div class="gbb-card better">
+      <div class="gbb-tier">Better</div>
+      <h3>Strong Asset</h3>
+      <div class="gbb-stat"><span class="gs-label">Purchase Price</span><span class="gs-val">$70,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Rehab Budget</span><span class="gs-val">$30,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Total In</span><span class="gs-val">$100,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Rooms</span><span class="gs-val">7 rooms</span></div>
+      <div class="gbb-stat"><span class="gs-label">ARV Target</span><span class="gs-val">$150,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Refi Cash Out</span><span class="gs-val">~$5–$10K</span></div>
+      <div class="gbb-stat"><span class="gs-label">Utility Control</span><span class="gs-val">Smart Thermostat</span></div>
+      <div class="gbb-cashflow">
+        <div class="cf-label">Monthly Cash Flow</div>
+        <div class="cf-val">$800–$1,000</div>
+      </div>
+    </div>
+
+    <div class="gbb-card best">
+      <div class="gbb-tier">Best</div>
+      <h3>Machine Builder</h3>
+      <div class="gbb-stat"><span class="gs-label">Purchase Price</span><span class="gs-val">$65,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Rehab Budget</span><span class="gs-val">$30,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Total In</span><span class="gs-val">$95,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Rooms</span><span class="gs-val">7 rooms (optimized)</span></div>
+      <div class="gbb-stat"><span class="gs-label">ARV Target</span><span class="gs-val">$160,000</span></div>
+      <div class="gbb-stat"><span class="gs-label">Refi Cash Out</span><span class="gs-val">$10–$20K</span></div>
+      <div class="gbb-stat"><span class="gs-label">Utility Control</span><span class="gs-val">Mini-splits + Locked Thermo</span></div>
+      <div class="gbb-cashflow">
+        <div class="cf-label">Monthly Cash Flow</div>
+        <div class="cf-val">$1,000–$1,300</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Walk Away Rules -->
+  <div style="margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="card" style="border-left:3px solid var(--red);">
+      <h3 style="color:var(--red);">Walk Away If</h3>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;">
+        <div style="font-size:0.85rem;color:var(--muted);">❌ Purchase price &gt; $80,000</div>
+        <div style="font-size:0.85rem;color:var(--muted);">❌ Rehab estimate &gt; $40,000</div>
+        <div style="font-size:0.85rem;color:var(--muted);">❌ Layout limits you to &lt; 6 rooms</div>
+        <div style="font-size:0.85rem;color:var(--muted);">❌ 2+ major systems failing</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--green);">
+      <h3 style="color:var(--green);">Green Light When</h3>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;">
+        <div style="font-size:0.85rem;color:var(--muted);">✅ Purchase ≤ $75,000</div>
+        <div style="font-size:0.85rem;color:var(--muted);">✅ Layout supports 6–7 rooms</div>
+        <div style="font-size:0.85rem;color:var(--muted);">✅ Net cash flow ≥ $800/mo</div>
+        <div style="font-size:0.85rem;color:var(--muted);">✅ Rehab ≤ $35,000</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="divider">
+
+<!-- BRRRR -->
+<div id="brrrr">
+<div class="section">
+  <div class="section-header">
+    <span class="section-tag">Section 03</span>
+    <h2>The BRRRR Method</h2>
+    <p>Buy · Rehab · Rent · Refinance · Repeat — how you scale from one deal to a portfolio.</p>
+  </div>
+
+  <div class="brrrr-wrap">
+    <div class="brrrr-steps">
+      <div class="brrrr-step">
+        <div class="step-letter">B</div>
+        <div class="step-body">
+          <h4>Buy</h4>
+          <p>Use SBL ($60K–$75K) to act like a cash buyer. Target distressed sellers. Offer $65K, settle at $70K max. Speed and certainty is your edge over financed buyers.</p>
+        </div>
+      </div>
+      <div class="brrrr-step">
+        <div class="step-letter">R</div>
+        <div class="step-body">
+          <h4>Rehab</h4>
+          <p>$30K hard cap. Fix major systems first (HVAC, electrical, plumbing). Convert living/dining to rooms. Install smart thermostat locked at 72–76°F. Durable LVP flooring, no luxury finishes.</p>
+        </div>
+      </div>
+      <div class="brrrr-step">
+        <div class="step-letter">R</div>
+        <div class="step-body">
+          <h4>Rent (PadSplit)</h4>
+          <p>Fill 6–7 rooms at $140–$155/week. Stabilize at 85–90% occupancy. This step is critical — lenders want to see income before they refi. Aim for 60 days of stable cash flow.</p>
+        </div>
+      </div>
+      <div class="brrrr-step">
+        <div class="step-letter">R</div>
+        <div class="step-body">
+          <h4>Refinance</h4>
+          <p>At 75% LTV on a $150K ARV, your loan is $112,500. After paying back your $100K investment and ~$5K closing costs, you recover most or all of your capital to redeploy.</p>
+        </div>
+      </div>
+      <div class="brrrr-step">
+        <div class="step-letter">R</div>
+        <div class="step-body">
+          <h4>Repeat</h4>
+          <p>Use returned capital for property #2. Same system. Each property adds $800–$1,200/month. Three properties = $2,400–$3,600/month without adding significant new capital.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="brrrr-numbers">
+
+      <div class="brrrr-num-card">
+        <h4>Deal #1 — Refi Breakdown</h4>
+        <div class="brrrr-flow">
+          <div class="bf-row"><span class="bfl">Purchase + Rehab</span><span class="bfv">$100,000</span></div>
+          <div class="bf-row"><span class="bfl">ARV</span><span class="bfv">$150,000</span></div>
+          <div class="bf-row"><span class="bfl">Refi Loan (75%)</span><span class="bfv">$112,500</span></div>
+          <div class="bf-row"><span class="bfl">Closing Costs</span><span class="bfv">~$5,000</span></div>
+          <div class="bf-row total"><span class="bfl">Capital Returned</span><span class="bfv">~$7,500</span></div>
+        </div>
+      </div>
+
+      <div class="brrrr-num-card">
+        <h4>Best Case — Full Recycle</h4>
+        <div class="brrrr-flow">
+          <div class="bf-row"><span class="bfl">Buy at $65K + Rehab $30K</span><span class="bfv">$95,000</span></div>
+          <div class="bf-row"><span class="bfl">ARV (top of range)</span><span class="bfv">$160,000</span></div>
+          <div class="bf-row"><span class="bfl">Refi Loan (75%)</span><span class="bfv">$120,000</span></div>
+          <div class="bf-row"><span class="bfl">Closing Costs</span><span class="bfv">~$5,000</span></div>
+          <div class="bf-row total"><span class="bfl">Cash Back to You</span><span class="bfv" style="color:var(--green);">~$20,000</span></div>
+        </div>
+      </div>
+
+      <div class="brrrr-num-card">
+        <h4>Portfolio Scaling Outlook</h4>
+        <div class="scaling-row head">
+          <span>Properties</span><span>Monthly CF</span><span>Annual</span>
+        </div>
+        <div class="scaling-row">
+          <span style="color:var(--muted);">1 Property</span>
+          <span class="sv">$800–$1,200</span>
+          <span class="sv">~$12K</span>
+        </div>
+        <div class="scaling-row">
+          <span style="color:var(--muted);">2 Properties</span>
+          <span class="sv">$1,600–$2,400</span>
+          <span class="sv">~$24K</span>
+        </div>
+        <div class="scaling-row">
+          <span style="color:var(--muted);">3 Properties</span>
+          <span class="sv">$2,400–$3,600</span>
+          <span class="sv">~$36K</span>
+        </div>
+        <div class="scaling-row">
+          <span style="color:var(--muted);">5 Properties</span>
+          <span class="sv">$4,000–$6,000</span>
+          <span class="sv">~$60K</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="divider">
+
+<!-- SBL RISK -->
+<div id="sbl">
+<div class="section">
+  <div class="section-header">
+    <span class="section-tag">Section 04</span>
+    <h2>SBL Risk Calculator</h2>
+    <p>Securities-Based Lending against your Schwab portfolio. Know your margin call threshold before you borrow.</p>
+  </div>
+
+  <div class="sbl-grid">
+
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="card">
+        <h3>Your Portfolio</h3>
+        <div class="input-group">
+          <label>Brokerage Portfolio Value</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="sbl-portfolio" value="362000" oninput="calcSBL()"></div>
+        </div>
+        <div class="input-group">
+          <label>SBL Loan Amount</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="sbl-loan" value="70000" oninput="calcSBL()"></div>
+        </div>
+        <div class="input-group">
+          <label>Maintenance Threshold</label>
+          <div class="input-row">
+            <input type="range" id="sbl-thresh" min="0.20" max="0.40" step="0.01" value="0.30" oninput="calcSBL()">
+            <span class="slider-val" id="sbl-threshVal">30%</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Cash Reserve (Emergency Buffer)</label>
+          <div class="input-row"><span class="prefix">$</span><input type="number" id="sbl-cash" value="136000" oninput="calcSBL()"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Risk Zones — LTV Guide</h3>
+        <div class="risk-zones">
+          <div class="risk-zone safe">
+            <div class="rz-dot"></div>
+            <span class="rz-label">Safe</span>
+            <span style="color:var(--muted);font-size:0.83rem;">LTV 0–25%</span>
+            <span class="rz-desc">No margin risk</span>
+          </div>
+          <div class="risk-zone warn">
+            <div class="rz-dot"></div>
+            <span class="rz-label">Watch</span>
+            <span style="color:var(--muted);font-size:0.83rem;">LTV 25–30%</span>
+            <span class="rz-desc">Monitor weekly</span>
+          </div>
+          <div class="risk-zone danger">
+            <div class="rz-dot"></div>
+            <span class="rz-label">Danger</span>
+            <span style="color:var(--muted);font-size:0.83rem;">LTV 30%+</span>
+            <span class="rz-desc">Margin call possible</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="card">
+        <h3>Current Position</h3>
+
+        <div class="ltv-bar-wrap">
+          <div class="ltv-labels">
+            <span>0%</span><span>25%</span><span>30%</span><span>50%+</span>
+          </div>
+          <div class="ltv-bar">
+            <div class="ltv-zones">
+              <div class="ltv-zone-safe"></div>
+              <div class="ltv-zone-warn"></div>
+              <div class="ltv-zone-danger"></div>
+            </div>
+            <div class="ltv-fill" id="sbl-ltvFill" style="width:19%;background:var(--green);"></div>
+          </div>
+        </div>
+
+        <div class="sbl-metric">
+          <span class="sm-label">Current LTV</span>
+          <span class="sm-val safe" id="sbl-ltv">19.3%</span>
+        </div>
+        <div class="sbl-metric">
+          <span class="sm-label">Portfolio After 30% Market Drop</span>
+          <span class="sm-val" id="sbl-drop30">$253,400</span>
+        </div>
+        <div class="sbl-metric">
+          <span class="sm-label">LTV After 30% Drop</span>
+          <span class="sm-val warn" id="sbl-ltv30">27.6%</span>
+        </div>
+        <div class="sbl-metric">
+          <span class="sm-label">Market Drop to Trigger Margin Call</span>
+          <span class="sm-val" id="sbl-triggerDrop">—</span>
+        </div>
+        <div class="sbl-metric">
+          <span class="sm-label">Portfolio Value at Margin Call</span>
+          <span class="sm-val" id="sbl-triggerVal">—</span>
+        </div>
+        <div class="sbl-metric">
+          <span class="sm-label">Cash Reserve Coverage</span>
+          <span class="sm-val safe" id="sbl-cashCoverage">—</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Trigger Action Rules</h3>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:0.25rem;">
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.65rem 0;border-bottom:1px solid var(--border-soft);">
+            <span style="color:var(--green);font-size:1.1rem;">●</span>
+            <div><div style="font-size:0.83rem;font-weight:600;color:var(--white);">10% Portfolio Drop</div><div style="font-size:0.78rem;color:var(--muted);margin-top:0.15rem;">Monitor only. No action needed.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.65rem 0;border-bottom:1px solid var(--border-soft);">
+            <span style="color:var(--yellow);font-size:1.1rem;">●</span>
+            <div><div style="font-size:0.83rem;font-weight:600;color:var(--white);">20% Portfolio Drop</div><div style="font-size:0.78rem;color:var(--muted);margin-top:0.15rem;">Review LTV. Prepare $10–$20K cash buffer for deposit.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.65rem 0;border-bottom:1px solid var(--border-soft);">
+            <span style="color:var(--red);font-size:1.1rem;">●</span>
+            <div><div style="font-size:0.83rem;font-weight:600;color:var(--white);">25–30% Portfolio Drop</div><div style="font-size:0.78rem;color:var(--muted);margin-top:0.15rem;">Add cash immediately OR reduce loan balance. Don't wait for broker to act.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.65rem 0;">
+            <span style="color:var(--red);font-size:1.1rem;">■</span>
+            <div><div style="font-size:0.83rem;font-weight:600;color:var(--white);">35%+ Drop</div><div style="font-size:0.78rem;color:var(--muted);margin-top:0.15rem;">Defensive mode. Aggressively reduce loan. Protect the portfolio at all cost.</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>Built for <strong>real operators</strong> using real PadSplit performance data · Not financial advice · Always verify your own numbers</p>
+</footer>
+
+<script>
+  function fmt(n, prefix='$') {
+    return prefix + Math.round(n).toLocaleString();
+  }
+
+  function pct(n) {
+    return (n * 100).toFixed(1) + '%';
+  }
+
+  function calc() {
+    const purchase   = parseFloat(document.getElementById('purchase').value) || 0;
+    const rehab      = parseFloat(document.getElementById('rehab').value) || 0;
+    const arv        = parseFloat(document.getElementById('arv').value) || 0;
+    const rooms      = parseFloat(document.getElementById('rooms').value) || 0;
+    const rent       = parseFloat(document.getElementById('rent').value) || 0;
+    const occ        = parseFloat(document.getElementById('occ').value) || 0;
+    const collLoss   = parseFloat(document.getElementById('collLoss').value) || 0;
+    const psFee      = parseFloat(document.getElementById('psFee').value) || 0;
+    const mortgage   = parseFloat(document.getElementById('mortgage').value) || 0;
+    const utilities  = parseFloat(document.getElementById('utilities').value) || 0;
+    const mgmt       = parseFloat(document.getElementById('mgmt').value) || 0;
+    const cleaning   = parseFloat(document.getElementById('cleaning').value) || 0;
+    const internet   = parseFloat(document.getElementById('internet').value) || 0;
+
+    // Sliders
+    document.getElementById('roomsVal').textContent = rooms;
+    document.getElementById('occVal').textContent = Math.round(occ * 100) + '%';
+    document.getElementById('collLossVal').textContent = Math.round(collLoss * 100) + '%';
+    document.getElementById('psFeeVal').textContent = Math.round(psFee * 100) + '%';
+
+    const totalInvest  = purchase + rehab;
+    const weeklyGross  = rooms * rent;
+    const monthlyGross = weeklyGross * 4.33;
+    const afterOcc     = monthlyGross * occ;
+    const afterPS      = afterOcc * (1 - psFee);
+    const collected    = afterPS * (1 - collLoss);
+
+    const totalExp     = mortgage + utilities + mgmt + cleaning + internet;
+    const cashflow     = collected - totalExp;
+    const annual       = cashflow * 12;
+
+    const refiLoan     = arv * 0.75;
+    const cashOut      = refiLoan - totalInvest - 5000;
+
+    document.getElementById('r-totalInvest').textContent = fmt(totalInvest);
+    document.getElementById('r-weeklyGross').textContent = fmt(weeklyGross);
+    document.getElementById('r-monthlyGross').textContent = fmt(monthlyGross);
+    document.getElementById('r-afterOcc').textContent = fmt(afterOcc);
+    document.getElementById('r-afterPS').textContent = fmt(afterPS);
+    document.getElementById('r-collected').textContent = fmt(collected);
+    document.getElementById('r-expenses').textContent = fmt(totalExp);
+    document.getElementById('r-cashflow').textContent = fmt(cashflow);
+    document.getElementById('r-annual').textContent = fmt(annual);
+    document.getElementById('r-refiLoan').textContent = fmt(refiLoan);
+    document.getElementById('r-cashOut').textContent = cashOut >= 0 ? fmt(cashOut) : '-' + fmt(Math.abs(cashOut));
+
+    // Deal Rating
+    const badge    = document.getElementById('dealBadge');
+    const icon     = document.getElementById('badgeIcon');
+    const title    = document.getElementById('badgeTitle');
+    const sub      = document.getElementById('badgeSub');
+    const buybox   = document.getElementById('buyboxStatus');
+
+    const isBuyBox = !(purchase > 80000 || rehab > 40000 || rooms < 6);
+
+    badge.className = 'deal-badge';
+    buybox.className = 'buybox';
+
+    if (!isBuyBox) {
+      badge.classList.add('red');
+      icon.textContent = '🚫';
+      title.textContent = 'WALK AWAY';
+      sub.textContent = 'Buy box violated — purchase, rehab, or rooms out of range';
+      buybox.classList.add('fail');
+      buybox.textContent = '✖ OUTSIDE BUY BOX';
+    } else if (cashflow >= 1000 && rooms >= 7 && purchase <= 70000 && rehab <= 30000) {
+      badge.classList.add('green');
+      icon.textContent = '🔥';
+      title.textContent = 'BEST DEAL';
+      sub.textContent = 'Cash flow ≥ $1,000 · All buy box criteria met · Machine builder tier';
+      buybox.classList.add('pass');
+      buybox.textContent = '✔ WITHIN BUY BOX';
+    } else if (cashflow >= 800 && rooms >= 6 && purchase <= 75000 && rehab <= 35000) {
+      badge.classList.add('green');
+      icon.textContent = '✅';
+      title.textContent = 'BETTER DEAL';
+      sub.textContent = 'Cash flow ≥ $800 · Strong rental asset · Move forward';
+      buybox.classList.add('pass');
+      buybox.textContent = '✔ WITHIN BUY BOX';
+    } else if (cashflow >= 600) {
+      badge.classList.add('yellow');
+      icon.textContent = '⚠️';
+      title.textContent = 'GOOD / REVIEW';
+      sub.textContent = 'Deal has merit but renegotiate purchase price or rehab scope';
+      buybox.classList.add('pass');
+      buybox.textContent = '✔ WITHIN BUY BOX';
+    } else {
+      badge.classList.add('red');
+      icon.textContent = '❌';
+      title.textContent = 'DOES NOT PENCIL';
+      sub.textContent = 'Cash flow below threshold — numbers don\'t work at current inputs';
+      buybox.classList.add('fail');
+      buybox.textContent = '✖ REVIEW REQUIRED';
+    }
+  }
+
+  function calcSBL() {
+    const portfolio = parseFloat(document.getElementById('sbl-portfolio').value) || 0;
+    const loan      = parseFloat(document.getElementById('sbl-loan').value) || 0;
+    const thresh    = parseFloat(document.getElementById('sbl-thresh').value) || 0.30;
+    const cash      = parseFloat(document.getElementById('sbl-cash').value) || 0;
+
+    document.getElementById('sbl-threshVal').textContent = Math.round(thresh * 100) + '%';
+
+    const ltv = portfolio > 0 ? (loan / portfolio) : 0;
+    const drop30Val = portfolio * 0.70;
+    const ltv30 = drop30Val > 0 ? (loan / drop30Val) : 0;
+
+    // Margin call trigger: loan / x = thresh → x = loan / thresh
+    const triggerPortfolio = thresh > 0 ? (loan / thresh) : 0;
+    const triggerDropPct = portfolio > 0 ? ((portfolio - triggerPortfolio) / portfolio) : 0;
+
+    // LTV fill bar — cap display at 50%
+    const fillPct = Math.min((ltv / 0.50) * 100, 100);
+    const fillEl = document.getElementById('sbl-ltvFill');
+    fillEl.style.width = fillPct + '%';
+    fillEl.style.background = ltv <= 0.25 ? 'var(--green)' : ltv <= 0.30 ? 'var(--yellow)' : 'var(--red)';
+
+    const ltvEl = document.getElementById('sbl-ltv');
+    ltvEl.textContent = pct(ltv);
+    ltvEl.className = 'sm-val ' + (ltv <= 0.25 ? 'safe' : ltv <= 0.30 ? 'warn' : 'danger');
+
+    document.getElementById('sbl-drop30').textContent = fmt(drop30Val);
+
+    const ltv30El = document.getElementById('sbl-ltv30');
+    ltv30El.textContent = pct(ltv30);
+    ltv30El.className = 'sm-val ' + (ltv30 <= 0.25 ? 'safe' : ltv30 <= 0.30 ? 'warn' : 'danger');
+
+    if (triggerPortfolio < portfolio) {
+      document.getElementById('sbl-triggerDrop').textContent = pct(triggerDropPct) + ' drop';
+      document.getElementById('sbl-triggerVal').textContent = fmt(triggerPortfolio);
+    } else {
+      document.getElementById('sbl-triggerDrop').textContent = 'N/A — already at risk';
+      document.getElementById('sbl-triggerVal').textContent = 'Review immediately';
+    }
+
+    const coverageEl = document.getElementById('sbl-cashCoverage');
+    if (cash >= loan) {
+      coverageEl.textContent = 'Full coverage (' + fmt(cash) + ')';
+      coverageEl.className = 'sm-val safe';
+    } else if (cash >= loan * 0.5) {
+      coverageEl.textContent = 'Partial (' + fmt(cash) + ' of ' + fmt(loan) + ')';
+      coverageEl.className = 'sm-val warn';
+    } else {
+      coverageEl.textContent = 'Low — add reserves';
+      coverageEl.className = 'sm-val danger';
+    }
+  }
+
+  // Init
+  calc();
+  calcSBL();
+</script>
+</body>
+</html>
